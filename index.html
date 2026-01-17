@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attestation de Formation - GRETA Lille Métropole</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
+        
+        body { font-family: 'Roboto', sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
+        
+        /* Conteneur format A4 strict */
+        .page-pdf { 
+            background: white; 
+            width: 210mm; 
+            height: 297mm; /* Hauteur A4 fixe */
+            padding: 15mm 20mm; 
+            margin: 20px auto; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .signature-pad { 
+            border: 2px solid #e2e8f0; 
+            background: #fff; 
+            width: 100%; 
+            height: 120px; 
+            border-radius: 8px;
+        }
+        
+        @media print { 
+            .no-print { display: none; }
+            body { background: white; }
+            .page-pdf { margin: 0; box-shadow: none; }
+        }
+    </style>
+</head>
+<body class="pb-10">
+
+    <div class="no-print sticky top-0 bg-white shadow-md p-4 flex justify-center gap-4 z-50">
+        <button id="download-btn" onclick="generatePDF()" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-8 rounded-full transition-all flex items-center shadow-lg">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            TÉLÉCHARGER EN PDF (1 PAGE)
+        </button>
+        <button onclick="signaturePad.clear()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-full transition-all">
+            Effacer la signature
+        </button>
+    </div>
+
+    <div id="capture-area" class="page-pdf">
+        
+        <div class="text-center mb-8 py-4 border-b-2 border-blue-900">
+            <h2 class="text-lg font-bold text-blue-900 uppercase">
+                Attestation de réalisation du Module développement durable du Greta Lille Métropole
+            </h2>
+        </div>
+
+        <div class="text-center mb-10">
+            <p class="uppercase tracking-widest text-gray-400 font-bold text-xs mb-2">République Française</p>
+            <h1 class="text-3xl font-black text-blue-900 leading-tight mb-2">ATTESTATION DE SUIVI<br>DE FORMATION</h1>
+            <div class="h-1 w-24 bg-red-600 mx-auto mb-4"></div>
+            <p class="text-xl font-light text-gray-700 italic">Sensibilisation au Développement Durable</p>
+        </div>
+
+        <div class="border-l-4 border-blue-800 pl-6 mb-10">
+            <h3 class="text-blue-800 font-bold uppercase text-xs mb-4 tracking-wider">Informations du Participant</h3>
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <span class="font-semibold text-gray-600 w-32">Nom & Prénom :</span>
+                    <input type="text" id="nom-input" class="flex-1 border-b border-gray-300 py-1 focus:border-blue-500 outline-none text-xl font-bold text-gray-800 bg-transparent">
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="font-semibold text-gray-600 w-32">Date :</span>
+                    <input type="text" id="date-input" value="2026" class="flex-1 border-b border-gray-300 py-1 outline-none text-xl text-gray-800 bg-transparent">
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <h3 class="text-blue-800 font-bold uppercase text-xs mb-6 tracking-wider">Parcours Pédagogique suivi :</h3>
+            <div class="grid grid-cols-1 gap-3">
+                <div class="flex items-center p-3 bg-blue-50 rounded-lg border border-blue-100">
+                    <input type="checkbox" checked class="w-5 h-5 accent-blue-800 mr-4">
+                    <span class="text-md text-gray-800 font-medium">Les Fondamentaux du Développement Durable</span>
+                </div>
+                <div class="flex items-center p-3 bg-blue-50 rounded-lg border border-blue-100">
+                    <input type="checkbox" checked class="w-5 h-5 accent-blue-800 mr-4">
+                    <span class="text-md text-gray-800 font-medium">Objectifs du Développement Durable (O.D.D)</span>
+                </div>
+                <div class="flex items-center p-3 bg-blue-50 rounded-lg border border-blue-100">
+                    <input type="checkbox" checked class="w-5 h-5 accent-blue-800 mr-4">
+                    <span class="text-md text-gray-800 font-medium">La RSE en Action (Responsabilité Sociétale)</span>
+                </div>
+                <div class="flex items-center p-3 bg-blue-50 rounded-lg border border-blue-100">
+                    <input type="checkbox" checked class="w-5 h-5 accent-blue-800 mr-4">
+                    <span class="text-md text-gray-800 font-medium">Le Numérique et l'Environnement</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-auto flex justify-between items-end pb-10">
+            <div class="text-sm">
+                <p class="text-gray-400 mb-1">Délivré à Lille par :</p>
+                <p class="font-bold text-blue-900 uppercase">GRETA Lille Métropole</p>
+                <p class="text-xs text-gray-500">Académie de Lille • Hauts-de-France</p>
+            </div>
+            <div class="w-64">
+                <p class="text-center text-xs font-bold text-gray-500 mb-2 italic">Signature du bénéficiaire</p>
+                <canvas id="signature-pad" class="signature-pad"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Init Signature
+        const canvas = document.getElementById('signature-pad');
+        const signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            penColor: 'rgb(30, 58, 138)'
+        });
+
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+        }
+        window.onresize = resizeCanvas;
+        resizeCanvas();
+
+        // PDF Generation
+        async function generatePDF() {
+            const element = document.getElementById('capture-area');
+            const btn = document.getElementById('download-btn');
+            
+            btn.innerHTML = "Préparation du PDF...";
+            btn.disabled = true;
+
+            const options = {
+                margin: 0,
+                filename: 'Attestation_Greta_1Page.pdf',
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true,
+                    letterRendering: true,
+                    scrollY: 0,
+                    onclone: (clonedDoc) => {
+                        // Remplacement des inputs par du texte statique pour le PDF
+                        const nom = document.getElementById('nom-input').value;
+                        const date = document.getElementById('date-input').value;
+                        clonedDoc.getElementById('nom-input').parentElement.innerHTML = `<span class="font-semibold text-gray-600 w-32">Nom & Prénom :</span><span class="text-xl font-bold text-gray-800 border-b border-gray-300 flex-1">${nom}</span>`;
+                        clonedDoc.getElementById('date-input').parentElement.innerHTML = `<span class="font-semibold text-gray-600 w-32">Date :</span><span class="text-xl text-gray-800 border-b border-gray-300 flex-1">${date}</span>`;
+                    }
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            try {
+                await html2pdf().set(options).from(element).save();
+            } catch (error) {
+                console.error(error);
+                alert("Erreur lors de la création du PDF.");
+            } finally {
+                btn.innerHTML = `<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> TÉLÉCHARGER EN PDF (1 PAGE)`;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
